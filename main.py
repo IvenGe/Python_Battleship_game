@@ -34,6 +34,24 @@ def get_all_pawns_in_text(pawns):
     return text
 
 
+def print_board(board):
+    text = ""
+
+    for counter in range(len(board)):
+        for index in range(len(board)):
+            if board[index][counter] is not None:
+
+                text += str(board[index][counter] + "_")
+
+            else:
+
+                text += "None "
+        text += '\n'
+    return text
+
+
+
+
 
 
 # board settings
@@ -58,7 +76,7 @@ pawns = {
 
 }
 
-stats = {}
+stats = pawns.copy()
 
 
 # Variables
@@ -77,8 +95,9 @@ is_setup_done_player2 = None
 while is_setup_done_player1 is None or is_setup_done_player2 is None:
     print("Its player " + str(turn) + "turn to place pawns\n")
     print("You can place: " + get_all_pawns_in_text(pawns))
-    place_pawn(int(input("On which row\n")), int(input("On which colom\n")), "", turn)
+    place_pawn(int(input("On which row\n")), int(input("On which column\n")), str(input("Witch board\n")), turn)
     print("Are you done ?")
+    print(print_board(player1_play_board))
     if str(input()).find('y') >= 0:
         if is_setup_done_player1:
             is_setup_done_player2 = True
