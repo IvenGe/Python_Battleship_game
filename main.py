@@ -81,7 +81,7 @@ pawns = {
 }
 
 stats = [None, pawns.copy(), pawns.copy()]  # Amount is now how much they have left & player 0 do not exist
-play_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]
+play_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]  # player one and 2
 guess_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]
 
 # Variables
@@ -96,12 +96,12 @@ while is_player_setup_done[turn] is None:
     print("Its player " + str(turn) + " turn to place pawns\n")
     print("You can place: " + get_all_pawns_in_text(pawns))
     place_pawn(int(input("On which row\n")), int(input("On which column\n")), str(input("Witch boat\n")), turn,
-               str(input("How do it have to place")), stats)
+               str(input("How do it have to place\n")), stats)
 
-    print("Are you done ?")
+    print("Are you done ? Type yes ")
     print(print_board(play_boards[turn]))
 
-    if str(input()).find('y') >= 0:
+    if str(input()).lower().find('e') >= 0 or str(input()).lower().find('y') >= 0:
         is_player_setup_done[turn] = True
         switch_turn(turn)
     print("Switching sides")
