@@ -36,7 +36,6 @@ def get_all_pawns_in_text(pawns):
 
 def print_board(board):
     text = ""
-    len_text = 10
 
     for counter in range(len(board)):
         for index in range(len(board)):
@@ -49,10 +48,6 @@ def print_board(board):
                 text += ". "
         text += '\n'
     return text
-
-
-
-
 
 
 # board settings
@@ -81,8 +76,7 @@ pawns = {
 
 }
 
-stats = [pawns.copy(), pawns.copy()]  # Amount is now how mutch they have left
-
+stats = [None, pawns.copy(), pawns.copy()]  # Amount is now how much they have left & player 0 do not exist
 
 # Variables
 winner = None
@@ -110,5 +104,3 @@ while is_setup_done_player1 is None or is_setup_done_player2 is None:
             is_setup_done_player1 = True
         print("Switching sides")
         turn = switch_turn(turn)
-
-print(get_all_pawns_in_text(pawns))
