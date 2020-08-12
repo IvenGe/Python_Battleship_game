@@ -36,16 +36,17 @@ def get_all_pawns_in_text(pawns):
 
 def print_board(board):
     text = ""
+    len_text = 10
 
     for counter in range(len(board)):
         for index in range(len(board)):
             if board[index][counter] is not None:
 
-                text += str(board[index][counter] + "_")
+                text += str(board[index][counter] + " ")
 
             else:
 
-                text += "None "
+                text += ". "
         text += '\n'
     return text
 
@@ -59,24 +60,28 @@ WIDTH = 10
 
 pawns = {
     "vliegdekschip": {
+        "Symbol": 'v',
         "Amount": 1,
         "Size": 6
     },
     "slagschip": {
+        "Symbol": 's',
         "Amount": 2,
         "Size": 4
     },
     "onderzeeër": {
+        "Symbol": 'o',
         "Amount": 3,
         "Size": 3
     }, "Patrouilleschip": {
+        "Symbol": 'p',
         "Amount": 4,
         "Size": 2
     },
 
 }
 
-stats = pawns.copy()
+stats = [pawns.copy(), pawns.copy()]  # Amount is now how mutch they have left
 
 
 # Variables
