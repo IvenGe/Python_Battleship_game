@@ -7,14 +7,18 @@ def create_board(width, board):
     return board.copy()
 
 
-def place_pawn(row, column, pawn, player):  # unsafe :(
+def place_symbol(row, column, pawn, player):  # unsafe :(
     pawn = str(pawn)
-    if player == 1:
-        player1_play_board[row][column] = pawn
-    elif player == 2:
-        player2_play_board[row][column] = pawn
+    play_boards[player][row][column] = stats[player][pawn].get("Symbol")
+
+
+def place_pawn(row, column, pawn, player, rotation, stats):
+    if rotation == '_':
+        for i in range(stats[player][pawn].get("Size")):
+            place_symbol(row + i, column, pawn, player)
     else:
-        print("Hacker D: ?")
+        for i in range(stats[player][pawn].get("Size")):
+            place_symbol(row, column + i, pawn, player)
 
 
 def switch_turn(turn=None):
@@ -77,30 +81,28 @@ pawns = {
 }
 
 stats = [None, pawns.copy(), pawns.copy()]  # Amount is now how much they have left & player 0 do not exist
+play_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]
+guess_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]
 
 # Variables
 winner = None
 turn = 1
 
 # start
-player1_play_board = create_board(WIDTH, [])
-player1_guess_board = create_board(WIDTH, [])
-player2_play_board = create_board(WIDTH, [])
-player2_guess_board = create_board(WIDTH, [])
 
-is_setup_done_player1 = None
-is_setup_done_player2 = None
+is_player_setup_done = [None, None, None]  # index 1 is player 1
 
-while is_setup_done_player1 is None or is_setup_done_player2 is None:
-    print("Its player " + str(turn) + "turn to place pawns\n")
+while is_player_setup_done[turn] is None:
+    print("Its player " + str(turn) + " turn to place pawns\n")
     print("You can place: " + get_all_pawns_in_text(pawns))
-    place_pawn(int(input("On which row\n")), int(input("On which column\n")), str(input("Witch board\n")), turn)
+    place_pawn(int(input("On which row\n")), int(input("On which column\n")), str(input("Witch boat\n")), turn,
+               str(input("How do it have to place")), stats)
+
     print("Are you done ?")
-    print(print_board(player1_play_board))
+    print(print_board(play_boards[turn]))
+
     if str(input()).find('y') >= 0:
-        if is_setup_done_player1:
-            is_setup_done_player2 = True
-        else:
-            is_setup_done_player1 = True
-        print("Switching sides")
-        turn = switch_turn(turn)
+        is_player_setup_done[turn] = True
+        switch_turn(turn)
+    print("Switching sides")
+    turn = switch_turn(turn)
