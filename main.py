@@ -1,3 +1,4 @@
+import copy
 def create_board(width, board):
     for row_index in range(width):
         board.append([])
@@ -13,18 +14,22 @@ def place_symbol(row, column, pawn, player):  # unsafe :(
 
 
 def place_pawn(row, column, pawn, player, rotation, stats):
-    if rotation == '_':
-        for i in range(stats[player][pawn].get("Size")):
-            place_symbol(row + i, column, pawn, player)
+    if stats[player][pawn].get("Amount") > 0:
+        if rotation == '_':
+            for i in range(stats[player][pawn].get("Size")):
+                place_symbol(row + i, column, pawn, player)
+            stats[player][pawn]["Amount"] -= 1
+        else:
+            for i in range(stats[player][pawn].get("Size")):
+                place_symbol(row, column + i, pawn, player)
+            stats[player][pawn]["Amount"] -= 1
     else:
-        for i in range(stats[player][pawn].get("Size")):
-            place_symbol(row, column + i, pawn, player)
+        print("You cant place this pawn here or you dont have that pawn left!")
 
 
 def switch_turn(turn=None):
     if turn == 1:
         turn = 2
-
     else:
         turn = 1
     return turn
@@ -33,22 +38,18 @@ def switch_turn(turn=None):
 def get_all_pawns_in_text(pawns):
     text = ""
     for pawn in pawns.keys():
-        text += pawn + ', '
+        text += str(pawns[pawn].get("Amount")) + " " + pawn + "'s from size " + str(pawns[pawn].get("Size")) + ', '
 
     return text
 
 
 def print_board(board):
     text = ""
-
     for counter in range(len(board)):
         for index in range(len(board)):
             if board[index][counter] is not None:
-
                 text += str(board[index][counter] + " ")
-
             else:
-
                 text += ". "
         text += '\n'
     return text
@@ -80,7 +81,8 @@ pawns = {
 
 }
 
-stats = [None, pawns.copy(), pawns.copy()]  # Amount is now how much they have left & player 0 do not exist
+stats = [None, copy.deepcopy(pawns),
+         copy.deepcopy(pawns)]  # Amount is now how much they have left & player 0 do not exist
 play_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]  # player one and 2
 guess_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]
 
@@ -94,15 +96,15 @@ is_player_setup_done = [None, None, None]  # index 1 is player 1
 
 while is_player_setup_done[turn] is None:
     print("Its player " + str(turn) + " turn to place pawns\n")
-    print("You can place: " + get_all_pawns_in_text(pawns))
+    print("You can place: " + get_all_pawns_in_text(stats[turn]))
     place_pawn(int(input("On which row\n")), int(input("On which column\n")), str(input("Witch boat\n")), turn,
                str(input("How do it have to place\n")), stats)
 
     print("Are you done ? Type yes ")
     print(print_board(play_boards[turn]))
 
-    if str(input()).lower().find('e') >= 0 or str(input()).lower().find('y') >= 0:
+    if str(input()).lower().find('e') >= 0:
         is_player_setup_done[turn] = True
         switch_turn(turn)
-    print("Switching sides")
-    turn = switch_turn(turn)
+        print("Switching sides")
+        turn = switch_turn(turn)
