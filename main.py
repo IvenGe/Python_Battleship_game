@@ -1,4 +1,6 @@
 import copy
+
+
 def create_board(width, board):
     for row_index in range(width):
         board.append([])
@@ -14,7 +16,7 @@ def place_symbol(row, column, pawn, player):  # unsafe :(
 
 
 def place_pawn(row, column, pawn, player, rotation, stats):
-    if stats[player][pawn].get("Amount") > 0:
+    if check_if_pawn_place_is_valid(row, column, pawn, player, rotation, stats):
         if rotation == '_':
             for i in range(stats[player][pawn].get("Size")):
                 place_symbol(row + i, column, pawn, player)
@@ -25,6 +27,20 @@ def place_pawn(row, column, pawn, player, rotation, stats):
             stats[player][pawn]["Amount"] -= 1
     else:
         print("You cant place this pawn here or you dont have that pawn left!")
+
+
+def check_if_pawn_place_is_valid(row, column, pawn, player, rotation, stats):
+    print(column + stats[player][pawn].get("Size") - WIDTH)
+    if not (stats[player][pawn].get("Amount") > 0 and WIDTH > (
+            row + stats[player][pawn].get("Size") - WIDTH) > 0) and rotation == '_':
+        print(1)
+        return True
+    elif not (stats[player][pawn].get("Amount") > 0 and WIDTH > (
+            column + stats[player][pawn].get("Size") - WIDTH) > 0) and rotation == '|':
+        print(2)
+        return True
+    else:
+        return False
 
 
 def switch_turn(turn=None):
