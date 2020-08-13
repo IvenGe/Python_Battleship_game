@@ -169,7 +169,7 @@ while is_player_setup_done[turn] is None:
 
 # running
 
-while winner is 0:
+while winner == 0:
     print("Its player " + str(turn) + " turn to place guess\n")
     print(print_board(guess_boards[turn]))
     print("-" * WIDTH)
