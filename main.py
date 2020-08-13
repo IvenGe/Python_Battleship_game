@@ -50,7 +50,7 @@ def check_if_something_is_already_in_use(row, column, pawn, player, rotation, st
                 return True
     if rotation == '|':
         for i in range(stats[player][pawn].get("Size")):
-            if play_boards[player + i][row][column] is not None:
+            if play_boards[player][row][column + i] is not None:
                 return True
     return False
 
@@ -135,9 +135,9 @@ is_player_setup_done = [None, None, None]  # index 1 is player 1
 
 while is_player_setup_done[turn] is None:
     print("Its player " + str(turn) + " turn to place pawns\n")
-    print("You can place: " + get_all_pawns_in_text(stats[turn]))
-    place_pawn(int(input("On which row\n")), int(input("On which column\n")), str(input("Witch boat\n")), turn,
-               str(input("How do it have to place\n")), stats)
+    place_pawn(int(input("On which row\n")), int(input("On which column\n")),
+               str(input("Witch boat: " + get_all_pawns_in_text(stats[turn]) + "\n")), turn,
+               str(input("In which direction: ( _ / | )\n")), stats)
 
     print("Are you done ? Type yes ")
     print(print_board(play_boards[turn]))
