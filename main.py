@@ -94,6 +94,25 @@ def guess(row, column, player_who_take_guess, board):
         print("MISS")
 
 
+def check_for_winner():
+    total = 0
+
+    for player in range(len(stats)):
+        for index in stats[player]:
+            total += stats[player][index].get("Amount") * stats[player][index].get("Size")
+        if total == get_total():
+            return player
+    return 0
+
+
+def get_total():
+    total = 0
+    for player in range(len(pawns)):
+        for index in stats[player]:
+            total += stats[player][index].get("Amount") * stats[player][index].get("Size")
+    return total
+
+
 # board settings
 WIDTH = 10
 
@@ -126,7 +145,7 @@ play_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]  # player
 guess_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]
 
 # Variables
-winner = None
+winner = 0
 turn = 1
 
 # setup
@@ -150,7 +169,7 @@ while is_player_setup_done[turn] is None:
 
 # running
 
-while winner is None:
+while winner is 0:
     print("Its player " + str(turn) + " turn to place guess\n")
     print(print_board(guess_boards[turn]))
     print("-" * WIDTH)
@@ -158,3 +177,6 @@ while winner is None:
     guess(int(input("On which row\n")), int(input("On which column\n")), turn, play_boards)
     print(print_board(guess_boards[turn]))
     turn = switch_turn(turn)
+    winner = check_for_winner()
+
+print("Winner is: player" + str(winner))
