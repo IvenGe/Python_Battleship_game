@@ -10,20 +10,19 @@ def create_board(width, board):
     return board.copy()
 
 
-def place_symbol(row, column, pawn, player):  # unsafe :(
-    pawn = str(pawn)
-    play_boards[player][row][column] = stats[player][pawn].get("Symbol")
+def place_symbol(row, column, symbol, player, board):  # unsafe :(
+    board[player][row][column] = symbol
 
 
 def place_pawn(row, column, pawn, player, rotation, stats):
     if check_if_pawn_place_is_valid(row, column, pawn, player, rotation, stats):
         if rotation == '_':
             for i in range(stats[player][pawn].get("Size")):
-                place_symbol(row + i, column, pawn, player)
+                place_symbol(row + i, column, stats[player][pawn].get("Symbol"), player, play_boards)
             stats[player][pawn]["Amount"] -= 1
         else:
             for i in range(stats[player][pawn].get("Size")):
-                place_symbol(row, column + i, pawn, player)
+                place_symbol(row, column + i, stats[player][pawn].get("Symbol"), player, play_boards)
             stats[player][pawn]["Amount"] -= 1
     else:
         print("You cant place this pawn here or you dont have that pawn left!")
@@ -31,19 +30,14 @@ def place_pawn(row, column, pawn, player, rotation, stats):
 
 def check_if_pawn_place_is_valid(row, column, pawn, player, rotation, stats):
     print(column + stats[player][pawn].get("Size") - WIDTH)
-    if not (stats[player][pawn].get("Amount") > 0 and WIDTH > (
-            row + stats[player][pawn].get(
-        "Size") - WIDTH) > 0) and rotation == '_' and not check_if_something_is_already_in_use(row, column, pawn,
-                                                                                               player,
-                                                                                               rotation, stats):
-        return True
+    if (stats[player][pawn].get("Amount") > 0 and WIDTH > (
+            WIDTH - (row + stats[player][pawn].get("Size"))) > 0) and rotation == '_':
 
-    elif not (stats[player][pawn].get("Amount") > 0 and WIDTH > (
-            column + stats[player][pawn].get(
-        "Size") - WIDTH) > 0) and rotation == '|' and not check_if_something_is_already_in_use(row, column, pawn,
-                                                                                               player,
-                                                                                               rotation, stats):
-        return True
+        return not check_if_something_is_already_in_use(row, column, pawn, player, rotation, stats)
+
+    elif (stats[player][pawn].get("Amount") > 0 and WIDTH > (
+            WIDTH - (column + stats[player][pawn].get("Size"))) > 0) and rotation == '|':
+        return not check_if_something_is_already_in_use(row, column, pawn, player, rotation, stats)
 
     else:
         return False
@@ -89,6 +83,17 @@ def print_board(board):
     return text
 
 
+def guess(row, column, player_who_take_guess, board):
+    if board[switch_turn(player_who_take_guess)][row][column] is not None:
+        place_symbol(row, column, '*', switch_turn(player_who_take_guess), play_boards)
+        place_symbol(row, column, '*', player_who_take_guess, guess_boards)
+        print("HIT")
+    else:
+        place_symbol(row, column, '-', switch_turn(player_who_take_guess), play_boards)
+        place_symbol(row, column, '-', player_who_take_guess, guess_boards)
+        print("MISS")
+
+
 # board settings
 WIDTH = 10
 
@@ -124,7 +129,7 @@ guess_boards = [None, create_board(WIDTH, []), create_board(WIDTH, [])]
 winner = None
 turn = 1
 
-# start
+# setup
 
 is_player_setup_done = [None, None, None]  # index 1 is player 1
 
@@ -142,3 +147,14 @@ while is_player_setup_done[turn] is None:
         switch_turn(turn)
         print("Switching sides")
         turn = switch_turn(turn)
+
+# running
+
+while winner is None:
+    print("Its player " + str(turn) + " turn to place guess\n")
+    print(print_board(guess_boards[turn]))
+    print("-" * WIDTH)
+    print(print_board(play_boards[turn]))
+    guess(int(input("On which row\n")), int(input("On which column\n")), turn, play_boards)
+    print(print_board(guess_boards[turn]))
+    turn = switch_turn(turn)
