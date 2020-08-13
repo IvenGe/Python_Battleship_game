@@ -32,15 +32,33 @@ def place_pawn(row, column, pawn, player, rotation, stats):
 def check_if_pawn_place_is_valid(row, column, pawn, player, rotation, stats):
     print(column + stats[player][pawn].get("Size") - WIDTH)
     if not (stats[player][pawn].get("Amount") > 0 and WIDTH > (
-            row + stats[player][pawn].get("Size") - WIDTH) > 0) and rotation == '_':
-        print(1)
+            row + stats[player][pawn].get(
+        "Size") - WIDTH) > 0) and rotation == '_' and not check_if_something_is_already_in_use(row, column, pawn,
+                                                                                               player,
+                                                                                               rotation, stats):
         return True
+
     elif not (stats[player][pawn].get("Amount") > 0 and WIDTH > (
-            column + stats[player][pawn].get("Size") - WIDTH) > 0) and rotation == '|':
-        print(2)
+            column + stats[player][pawn].get(
+        "Size") - WIDTH) > 0) and rotation == '|' and not check_if_something_is_already_in_use(row, column, pawn,
+                                                                                               player,
+                                                                                               rotation, stats):
         return True
+
     else:
         return False
+
+
+def check_if_something_is_already_in_use(row, column, pawn, player, rotation, stats):
+    if rotation == '_':
+        for i in range(stats[player][pawn].get("Size")):
+            if play_boards[player][row + i][column] is not None:
+                return True
+    if rotation == '|':
+        for i in range(stats[player][pawn].get("Size")):
+            if play_boards[player + i][row][column] is not None:
+                return True
+    return False
 
 
 def switch_turn(turn=None):
